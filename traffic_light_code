@@ -1,0 +1,116 @@
+//Inisialisasi
+
+// Setiap arah memiliki 3 lampu: merah, kuning, hijau
+// Angka menunjukkan pin digital Arduino yang digunakan
+
+// UTARA
+int merahU = 2;   // LED merah arah utara terhubung ke pin 2
+int kuningU = 3;  // LED kuning arah utara ke pin 3
+int hijauU = 4;   // LED hijau arah utara ke pin 4
+
+// TIMUR
+int merahT = 5;   // LED merah arah timur ke pin 5
+int kuningT = 6;  // LED kuning arah timur ke pin 6
+int hijauT = 7;   // LED hijau arah timur ke pin 7
+
+// SELATAN
+int merahS = 8;   // LED merah arah selatan ke pin 8
+int kuningS = 9;  // LED kuning arah selatan ke pin 9
+int hijauS = 10;  // LED hijau arah selatan ke pin 10
+
+// BARAT
+int merahB = 11;  // LED merah arah barat ke pin 11
+int kuningB = 12; // LED kuning arah barat ke pin 12
+int hijauB = 13;  // LED hijau arah barat ke pin 13
+
+
+//Fungsi setup
+void setup() {
+
+  // Looping untuk mengatur semua pin dari 2 sampai 13 sebagai OUTPUT
+  for (int i = 2; i <= 13; i++) {
+    pinMode(i, OUTPUT);
+  }
+
+  // Memanggil fungsi semuaMerah agar kondisi awal semua lampu merah menyala
+  semuaMerah();
+}
+
+
+//Fungsi Loop
+void loop() {
+
+  // Fungsi aktifkanSimpang dipanggil untuk setiap arah
+  // Urutan: Utara - Timur - Selatan - Barat (searah jarum jam)
+
+  aktifkanSimpang(merahU, kuningU, hijauU); // Mengaktifkan arah Utara
+  aktifkanSimpang(merahT, kuningT, hijauT); // Mengaktifkan arah Timur
+  aktifkanSimpang(merahS, kuningS, hijauS); // Mengaktifkan arah Selatan
+  aktifkanSimpang(merahB, kuningB, hijauB); // Mengaktifkan arah Barat
+
+  // Setelah selesai, loop() akan mengulang lagi dari awal
+}
+
+
+// Fungsi untuk memastikan semua arah dalam kondisi aman
+// yaitu semua lampu merah menyala dan lampu lain mati
+void semuaMerah() {
+
+  // Menyalakan semua lampu merah (HIGH = ON)
+  digitalWrite(merahU, HIGH);
+  digitalWrite(merahT, HIGH);
+  digitalWrite(merahS, HIGH);
+  digitalWrite(merahB, HIGH);
+
+  // Mematikan semua lampu kuning (LOW = OFF)
+  digitalWrite(kuningU, LOW);
+  digitalWrite(kuningT, LOW);
+  digitalWrite(kuningS, LOW);
+  digitalWrite(kuningB, LOW);
+
+  // Mematikan semua lampu hijau (LOW = OFF)
+  digitalWrite(hijauU, LOW);
+  digitalWrite(hijauT, LOW);
+  digitalWrite(hijauS, LOW);
+  digitalWrite(hijauB, LOW);
+}
+
+
+//Fungsi mengaktifkan simpang
+
+// Fungsi yang digunakan untuk mengatur satu arah lampu lalu lintas
+// Parameter:
+// merah  = pin LED merah
+// kuning = pin LED kuning
+// hijau  = pin LED hijau
+
+void aktifkanSimpang(int merah, int kuning, int hijau) {
+
+  // Memastikan semua arah dalam kondisi merah terlebih dahulu
+  // Ini penting agar tidak terjadi konflik (dua arah hijau bersamaan)
+  semuaMerah();
+
+
+  // Looping untuk lampu kuning berkedip sebanyak 3 kali
+  for (int i = 0; i < 3; i++) {
+
+    digitalWrite(kuning, HIGH); // Nyalakan lampu kuning
+    delay(300);                 // Tunggu 300 ms
+
+    digitalWrite(kuning, LOW);  // Matikan lampu kuning
+    delay(300);                 // Tunggu 300 ms
+  }
+
+  // Lampu Hijau Menyala
+  digitalWrite(merah, LOW);   // Matikan lampu merah pada arah ini
+  digitalWrite(hijau, HIGH);  // Nyalakan lampu hijau
+
+  delay(5000); // Tunggu 5 detik (kendaraan jalan)
+
+  // Kembali ke merah
+  digitalWrite(hijau, LOW);   // Matikan lampu hijau
+  digitalWrite(merah, HIGH);  // Nyalakan kembali lampu merah
+
+  // Delay kecil untuk transisi agar tidak terlalu cepat pindah
+  delay(800);
+}
